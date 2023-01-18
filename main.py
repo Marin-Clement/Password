@@ -82,7 +82,7 @@ def clear_json():
         with open("passwords.json", "w") as file:
             file.write("{}")
             messagebox.showinfo("File Cleared", "Passwords file cleared")
-    on_clear()
+            on_clear()
 
 
 root = tk.Tk()
