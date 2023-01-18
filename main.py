@@ -5,6 +5,7 @@ import json
 
 password_show = False
 
+
 def check_password(password):
     has_uppercase = False
     has_lowercase = False
@@ -83,7 +84,9 @@ def clear_json():
             messagebox.showinfo("File Cleared", "Passwords file cleared")
     on_clear()
 
+
 root = tk.Tk()
+root.resizable(False,False)
 root.title("Password Manager")
 root.geometry("650x300")
 
@@ -108,11 +111,8 @@ clear_button.grid(row=2, column=1)
 clear_json = tk.Button(root, text="Deleted all saved password", command=clear_json)
 clear_json.grid(row=2, column=4)
 
-
 password_list = tk.Listbox(root, width=100)
-password_list.grid(row=1, column=0, columnspan=10)
+password_list.grid(row=1, column=0, columnspan=10, padx=20)
 
-root.mainloop()
-
-
+on_show()
 root.mainloop()
