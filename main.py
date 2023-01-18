@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 import hashlib
 import json
 
@@ -26,10 +27,9 @@ def check_password(password):
 
 def on_add():
     password = password_entry.get()
-    if check_password(password):
-        print("Password Allowed")
-    else:
-        print("Invalid password. It must contain at least 8 characters, one lowercase letter, one uppercase letter, one number and one special character (!, @, #, $, %, ^, &, *).")
+    if not check_password(password):
+        messagebox.showerror("Invalid password",
+                             "Invalid password. It must contain at least 8 characters, one lowercase letter, one uppercase letter, one number and one special character (!, @, #, $, %, ^, &, *).")
         return
     password_hash = hashlib.sha256(password.encode()).hexdigest()
 
@@ -40,8 +40,9 @@ def on_add():
         passwords = {}
 
     if password_hash in passwords:
-        print("Password already saved")
+        messagebox.showwarning("Password Already", "Password Already saved")
     else:
+        messagebox.showinfo("Password Added", "Password Successfully added")
         passwords[password_hash] = password
 
     with open("passwords.json", "w") as file:
@@ -50,6 +51,7 @@ def on_add():
     print("Passwords : ")
     for key, value in passwords.items():
         print(key + " : " + value)
+    on_show()
 
 
 def on_clear():
@@ -57,6 +59,7 @@ def on_clear():
 
 
 def on_show():
+    on_clear()
     with open("passwords.json", "r") as file:
         data = json.load(file)
         for key, value in data.items():
@@ -73,9 +76,12 @@ def show_clear():
         password_show = False
 
 
-def on_exit():
-    exit()
-
+def clear_json():
+    if messagebox.askyesno("Clear JSON", "are you sure to delete all password ?"):
+        with open("passwords.json", "w") as file:
+            file.write("{}")
+            messagebox.showinfo("File Cleared", "Passwords file cleared")
+    on_clear()
 
 root = tk.Tk()
 root.title("Password Manager")
@@ -99,8 +105,9 @@ show_button.grid(row=2, column=0)
 clear_button = tk.Button(root, text="Clear Passwords", command=on_clear)
 clear_button.grid(row=2, column=1)
 
-exit_button = tk.Button(root, text="Exit", command=on_exit)
-exit_button.grid(row=2, column=4)
+clear_json = tk.Button(root, text="Deleted all saved password", command=clear_json)
+clear_json.grid(row=2, column=4)
+
 
 password_list = tk.Listbox(root, width=100)
 password_list.grid(row=1, column=0, columnspan=10)
