@@ -26,7 +26,7 @@ def check_password(password):
     return False
 
 
-def on_add():
+def add():
     password = password_entry.get()
     if not check_password(password):
         messagebox.showerror("Invalid password",
@@ -52,14 +52,14 @@ def on_add():
     print("Passwords : ")
     for key, value in passwords.items():
         print(key + " : " + value)
-    on_show()
+    show()
 
 
 def on_clear():
     password_list.delete(0, tk.END)
 
 
-def on_show():
+def show():
     on_clear()
     with open("passwords.json", "r") as file:
         data = json.load(file)
@@ -67,9 +67,9 @@ def on_show():
             password_list.insert(tk.END, key + " : " + value)
 
 
-def show_clear():
+def show_password():
     global password_show
-    if password_show == False:
+    if not password_show:
         password_entry.configure(show="")
         password_show = True
     else:
@@ -86,7 +86,7 @@ def clear_json():
 
 
 root = tk.Tk()
-root.resizable(False,False)
+root.resizable(False, False)
 root.title("Password Manager")
 root.geometry("650x300")
 
@@ -96,13 +96,13 @@ password_label.grid(row=0, column=0)
 password_entry = tk.Entry(root, show="*")
 password_entry.grid(row=0, column=1, pady=20)
 
-show_current_password = tk.Button(root, text="Show", command=show_clear)
+show_current_password = tk.Button(root, text="Show", command=show_password)
 show_current_password.grid(row=0, column=2)
 
-add_button = tk.Button(root, text="Add Password", command=on_add)
+add_button = tk.Button(root, text="Add Password", command=add)
 add_button.grid(row=0, column=3)
 
-show_button = tk.Button(root, text="Show Passwords", command=on_show)
+show_button = tk.Button(root, text="Show Passwords", command=show)
 show_button.grid(row=2, column=0)
 
 clear_button = tk.Button(root, text="Clear Passwords", command=on_clear)
@@ -114,5 +114,11 @@ clear_json.grid(row=2, column=4)
 password_list = tk.Listbox(root, width=100)
 password_list.grid(row=1, column=0, columnspan=10, padx=20)
 
-on_show()
+show()
 root.mainloop()
+
+"""
+Ici dans le json le mot de passe hashé est associé à son mot de pas en clair, ce qui n'a pas vraiment de sens d'un point de
+vue sécuriter, mais j'ai fait cela pour une clarté de correction. Dans un vrai fichier il ne faudrait jamais associer 
+un mot de passe crypter a son homonyme en clair.
+"""
