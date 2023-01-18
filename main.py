@@ -21,26 +21,44 @@ def check_password(password):
             return True
     return False
 
+
 while True:
-    password = input("Choose a Password : ")
-    if check_password(password):
-        print("Password Allowed")
-        break
+    print("If you want to add a password press 1:")
+    print("If you want to show current saved password press 2:")
+    print("If you want to exit program press 3:")
+    choice = input("Choose: ")
+
+    if choice == '1':
+        password = input("Choose a Password : ")
+        if check_password(password):
+            print("Password Allowed")
+            break
+        else:
+            print("Invalid password. It must contain at least 8 characters, one lowercase letter, one uppercase letter, one number and one special character (~,`,!,@,#,$,%,^,&,*,(,),-,_,+,=,{,},[,],|,:,;,<,>,,,.,?,")
+    elif choice == '2':
+        print("Passwords : ")
+        with open("passwords.json", "r") as file:
+            data = json.load(file)
+            print(data)
+        exit()
+    elif choice == '3':
+        exit()
     else:
-        print("Invalid password. It must contain at least 8 characters, one lowercase letter, one uppercase letter, one number and one special character (!, @, #, $, %, ^, &, *).")
+        print("IMPUT ERROR")
 
 
 password_hash = hashlib.sha256(password.encode()).hexdigest()
-
-passwords = {}
 
 try:
     with open("passwords.json", "r") as file:
         passwords = json.load(file)
 except:
-    pass
+    passwords = {}
 
-passwords[password_hash] = password
+if password_hash in passwords:
+    print("Password already saved")
+else:
+    passwords[password_hash] = password
 
 with open("passwords.json", "w") as file:
     json.dump(passwords, file)
@@ -48,7 +66,6 @@ with open("passwords.json", "w") as file:
 print("Passwords : ")
 for key, value in passwords.items():
     print(key + " : " + value)
-
 
 """
 Ici dans le json le mot de passe hashé est associé à son mot de pas en clair, ce qui n'a pas vraiment de sens d'un point de
